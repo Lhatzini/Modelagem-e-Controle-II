@@ -7,7 +7,7 @@ data = readtable('modelagemdados.csv');
 u1 = data.Temp;  
 y1 = data.PWM;  
 
-
+% Subtrair a média móvel para remover tendências
 window_size = 5; % Tamanho da janela para a média móvel
 u1m = u1 - movmean(u1, window_size, 'omitnan'); 
 y1m = y1 - movmean(y1, window_size, 'omitnan'); 
@@ -85,9 +85,9 @@ sorted_data_arx = sortrows(data_arx, 'ajuste', 'descend');
 
 fprintf("Melhores coeficientes ARX: ");
 best_coef_arx = sorted_data_arx.coef(1,:);
+disp(best_coef_arx);  % Exibe os coeficientes no terminal
 
-fprintf("Com o ajuste ARX de: ");
-best_adj_arx = sorted_data_arx.ajuste(1);
+fprintf("Com o ajuste ARX de: %.2f%%\n", sorted_data_arx.ajuste(1));
 
 %% Organize ARMAX results
 data_armax = table(coef_armax, ajustes_armax, aic_armax, 'VariableNames', {'coef', 'ajuste', 'AIC'});
@@ -95,13 +95,13 @@ sorted_data_armax = sortrows(data_armax, 'ajuste', 'descend');
 
 fprintf("\nMelhores coeficientes ARMAX: ");
 best_coef_armax = sorted_data_armax.coef(1,:);
+disp(best_coef_armax);  % Exibe os coeficientes no terminal
 
-fprintf("Com o ajuste ARMAX de: ");
-best_adj_armax = sorted_data_armax.ajuste(1);
+fprintf("Com o ajuste ARMAX de: %.2f%%\n", sorted_data_armax.ajuste(1));
 
 %% Comparação dos melhores modelos
-fprintf("\nDesempenho ARX: %.2f%%\n", best_adj_arx);
-fprintf("Desempenho ARMAX: %.2f%%\n", best_adj_armax);
+fprintf("\nDesempenho ARX: %.2f%%\n", sorted_data_arx.ajuste(1));
+fprintf("Desempenho ARMAX: %.2f%%\n", sorted_data_armax.ajuste(1));
 
 %% Plotting ARX and ARMAX results
 best_arx_model = arx(training, best_coef_arx, opt_arx);
